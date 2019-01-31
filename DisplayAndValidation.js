@@ -17,7 +17,8 @@ var DisplayAndValidation =
 
         for(var i = 0; i < eventsDatabase.length; i++)
         {
-            options += i + " - " + eventsDatabase[i].eventName + "\n";
+            options += i + " - " + this.displeyNameWithFeeIndex(eventsDatabase[i].eventFee) 
+            + eventsDatabase[i].eventName + "\n";
         }
 
         return options;
@@ -29,7 +30,21 @@ var DisplayAndValidation =
 
         for(var i = 0; i < eventsDatabase.length; i++)
         {
-            options += eventsDatabase[i].id + " - " + eventsDatabase[i].eventName + "\n";
+            options += eventsDatabase[i].id + " - " + this.displeyNameWithFeeIndex(eventsDatabase[i].eventFee) 
+            + eventsDatabase[i].eventName + "\n";
+        }
+
+        return options;
+    },
+
+    "displayAllEventsByFilterResult" : function(resultList)
+    {
+        var options = "";
+
+        for(var i = 0; i < resultList.length; i++)
+        {
+            options += resultList[i].id + " - " + this.displeyNameWithFeeIndex(resultList[i].eventFee) 
+            + resultList[i].eventName + "\n";
         }
 
         return options;
@@ -43,18 +58,6 @@ var DisplayAndValidation =
         {
             options += i + " - " + clientsList[i].firstName + " " + clientsList[i].lastName 
             + " - " + clientsList[i].age + "\n";
-        }
-
-        return options;
-    },
-
-    "displayAllEventsByFilterResult" : function(resultList)
-    {
-        var options = "";
-
-        for(var i = 0; i < resultList.length; i++)
-        {
-            options += resultList[i].id + " - " + resultList[i].eventName + "\n";
         }
 
         return options;
@@ -208,4 +211,21 @@ var DisplayAndValidation =
 
         return options;
     },
+
+    "displeyEntyFee" : function(fee)
+    {
+        if(fee == 0)
+            return "Free";
+
+        return fee + "$";
+    },
+
+    "displeyNameWithFeeIndex" : function(fee)
+    {
+        console.log(fee);
+        if(fee == 0)
+            return "!";
+
+        return "$";
+    }
 }

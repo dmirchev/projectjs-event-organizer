@@ -11,13 +11,14 @@ var ClientIDCounter =
     },
 }
 
-function Client(first, last, gender, age)
+function Client(first, last, gender, age, wallet = 0)
 {
     this.id = ClientIDCounter.getNextClientID();
     this.firstName = first;
     this.lastName = last;
     this.gender = gender;
     this.age = age;
+    this.wallet = wallet;
 
     clientsDatabase.push(this);
 
@@ -29,7 +30,7 @@ function DisplayClientInList(client)
     var gender = (client.gender) ? "Male" : "Female";
 
     var message = client.firstName + " " + client.lastName 
-    + ": " + gender + " - " + client.age;
+    + ": " + gender + " - " + client.age + " / " + client.wallet + "$";
 
     console.log(message);
     return message;
@@ -40,7 +41,7 @@ function DisplayClientShort(client)
     var gender = (client.gender) ? "Male" : "Female";
 
     var message = "Client Name: " + client.firstName + " " + client.lastName 
-    + "\nAge: " + client.age + " - " + gender;
+    + "\nAge: " + client.age + " - " + gender + " / " + client.wallet + "$";;
     alert(message);
 }
 
@@ -50,7 +51,8 @@ function DisplayClientFull(client)
 
     var message = "ID: " + client.id 
     + "\nClient Name: " + client.firstName + " " + client.lastName 
-    + "\nGender: " + gender + "\nAge: " + client.age;
+    + "\nGender: " + gender + "\nAge: " + client.age 
+    + "\nWallet: " + client.wallet + "$";;
 
     alert(message);
 }
@@ -59,12 +61,17 @@ var ClientUtil =
 {
     "createClient" : function()
     {
-        var waitName = true;
-        var firstName, lastName = "";
+        var wait = true;
+        var firstName = null;
+        var lastName = null;
+        var gender = null;
+        var age = null;
+        var wallet = null;
 
-        while(waitName)
+        while(wait)
         {
-            firstName = prompt("Please Enter Client First Name");
+            if(firstName == null)
+                firstName = prompt("Please Enter Client First Name");
 
             if(firstName == null)
             {
@@ -72,7 +79,8 @@ var ClientUtil =
                 return;
             }
 
-            lastName = prompt("Please Enter Client Last Name");
+            if(lastName == null)
+                lastName = prompt("Please Enter Client Last Name");
             
             if(lastName == null)
             {
@@ -81,42 +89,71 @@ var ClientUtil =
             }
             
         
-            if(firstName.length != 0 && lastName.length != 0)
-            {
-                waitName = false;
-            }
-            else
+            if(firstName.length == 0 || lastName.length == 0)
             {
                 alert("Invalid name");
+                firstName = null;
+                lastName == null;
+                continue;
             }
-        }
 
-        var gender = confirm("Are you Male or Female?\nOK - Male\nCanel - Female", true);
+            //Set Gender
+            if(gender == null)
+                gender = confirm("Are you Male or Female?\nOK - Male\nCanel - Female", true);
 
-        var age = prompt("Please Enter Your Are.");
-        var waitAge = true;
+            //Set Age
+            if(age == null)
+                age = prompt("Please Enter Your Age.");
 
-        if(age == null)
-        {
-            Menu.retrurnToClientMenu();
-            return;
-        }
-
-        while(waitAge)
-        {
-            if(age > 0)
+            if(age == null)
             {
-                waitAge = false;
+                //Menu.retrurnToClientMenu();
+                gender = null;
+                continue;
             }
-            else
+
+            if(age <= 0)
             {
-                alert("Invalid Age");
-                
-                age = prompt("Please Enter a Valid Age");
+                alert("Please Enter a Positive Number as Your Age");
+                age = null;
+                continue;
             }
+        
+            if(age * 0 != 0)
+            {
+                alert("Invalid Age\nPlease Enter a Number as Your Age");
+                age = null;
+                continue;
+            }
+
+            //Set Wallet Money
+            if(wallet == null)
+                wallet = prompt("Please Enter How Much Money to Add to Your Wallet")
+
+            if(wallet == null)
+            {
+                age = null;
+                continue;
+            }
+
+            if(wallet < 0)
+            {
+                alert("Please Enter a Positive Number for Money");
+                wallet = null;
+                continue;
+            }
+        
+            if(wallet * 0 != 0)
+            {
+                alert("Invalid Money\nPlease Enter a Number for Money");
+                wallet = null;
+                continue;
+            }
+
+            wait = false;
         }
 
-        Client(firstName, lastName, gender, age);
+        new Client(firstName, lastName, gender, age, wallet);
         DisplayClientShort(clientsDatabase[clientsDatabase.length - 1]);
 
         alert("The Client " + firstName + " " + lastName + " was successfully created");

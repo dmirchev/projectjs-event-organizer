@@ -4,19 +4,19 @@ var clientIDCounter = 1;
 function PopulateDefaultEvents()
 {
     new Event("Gallery Opening");
-    new Event("Horror Cinema Night", true);
-    new Event("Friday Parti in Da Club", true);
-    new Event("Theater Night");
-    new Event("Traveling at Midnight", true);
+    new Event("Horror Cinema Night", 15, true);
+    new Event("Friday Parti in Da Club", 30, true);
+    new Event("Theater Night", 7);
+    new Event("Traveling at Midnight", 50, true);
 }
 
 function PopulateDefaultClients()
 {
-    new Client("Tom", "Hardy", true, 38);
+    new Client("Tom", "Hardy", true, 38, 100);
     new Client("Elon", "Dusk", true, 35);
-    new Client("Lara", "Raider", false, 25);
+    new Client("Lara", "Raider", false, 25, 500);
     new Client("Merry", "Larson", false, 18);
-    new Client("Betty", "Lue", false, 8);
+    new Client("Betty", "Lue", false, 8, 2);
 }
 
 function PopulateDefaultAttendingClients()

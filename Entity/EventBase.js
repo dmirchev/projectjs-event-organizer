@@ -10,10 +10,11 @@ var EventIDCounter =
     }
 }
 
-function Event(name, flag = false, date = DataManager.getCurrentDate())
+function Event(name, fee = 0, flag = false, date = DateManager.getCurrentDate())
 {
     this.id = EventIDCounter.getNextEventID();
     this.eventName = name;
+    this.eventFee = fee;
     this.ageFlag = flag;
     this.attendingClients = [];
     this.eventDate = date;
@@ -25,8 +26,9 @@ function Event(name, flag = false, date = DataManager.getCurrentDate())
 
 function DisplayEventShort(event)
 {
-    var message = "Event Name: " + event.eventName + "\nAge Restriction: " + event.ageFlag
-    + "\n Event Date: " + DataManager.displayDateAsMessage(event.eventDate);
+    var message = "Event Name: " + event.eventName + "\nEvent Fee: " + event.eventFee 
+    + "\nAge Restriction: " + event.ageFlag
+    + "\nEvent Date: " + DateManager.displayDateAsMessage(event.eventDate);
     alert(message);
 }
 
@@ -34,7 +36,8 @@ function DisplayEventFull(event)
 {
     var message = "ID: " + event.id
     + "\nEvent Name: " + event.eventName 
-    + "\nEvent Date: " + DataManager.displayDateAsMessage(event.eventDate);
+    + "\nEntry Fee: " + DisplayAndValidation.displeyEntyFee(event.eventFee);
+    + "\nEvent Date: " + DateManager.displayDateAsMessage(event.eventDate);
     + "\n-----------------------------------"
     + "\nAge Restriction: " + event.ageFlag
     + "\n-----------------------------------"
@@ -58,12 +61,14 @@ var EventUtil =
         var wait = true;
 
         var name = "";
+        var fee = null;
         var flag = null;
         var dateType;
         var date;
 
         while(wait)
         {
+            //Set Event Name
             if(name.length == 0)
                 name = prompt("Please Enter Event Name");
 
@@ -80,16 +85,45 @@ var EventUtil =
                 continue;
             }
 
+            //Set Event Fee
+            if(fee == null)
+                fee = prompt("Plese Select if the Event will have an Entry Fee.");
+            
+            if(fee == null || fee < 0)
+            {
+                if(fee < 0)
+                {
+                    alert("Please Enter a Positive Number or 0 as Entry Fee");
+                    fee = null;
+                }
+                else
+                {
+                    name = "";
+                }
+                continue;
+            }
+
+            if(fee * 0 != 0)
+            {
+                alert("Please Enter a Number as Entry Fee");
+                fee = null;
+                continue;
+            }
+
+            //Set Event Age Restriction
             if(flag == null)
                 flag = confirm("Is the Event Age Restricted ?", false);
 
+            //Set Event Date
             dateType = confirm("Do You want to set the date yourself or to assign Today's Date?\n" +
             "\nOk - Choose Date\nCancel - Set Today's Date");
 
             if(dateType)
-                date = DataManager.setDate();
+                date = DateManager.setDate();
             else
-                date = DataManager.getCurrentDate();
+                date = DateManager.getCurrentDate();
+
+            console.log("date: " + date);
 
             if(date == null)
                 continue;
@@ -97,7 +131,7 @@ var EventUtil =
             wait = false;
         }
 
-        EventBase(name, flag, date);
+        new Event(name, fee, flag, date);
         DisplayEventShort(eventsDatabase[eventsDatabase.length - 1]);
 
         alert("The Event " + name + " was successfully created");
@@ -309,6 +343,19 @@ var EventUtil =
 
             return;
         }
+
+        var moneyLeft = client.wallet - event.eventFee;
+
+        if(moneyLeft < 0)
+        {
+            alert("You don't have Enough Money to Attent to this Event" 
+            + "\nEvent Entry Fee: " + event.eventFee + "$" 
+            + "\nYour Ballance: " + client.wallet + "$");
+
+            return;
+        }
+
+        clientsDatabase[clientListId].wallet = moneyLeft;
 
         event.attendingClients.push(client);
 
